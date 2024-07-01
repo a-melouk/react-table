@@ -84,9 +84,15 @@ const StyledPaginationDiv = styled.div`
     &:disabled {
       background-color: #f1f1f1;
       cursor: not-allowed;
+      color: #838383;
     }
   }
 `;
+
+const StyledSpannedTd = styled.td`
+  text-align: center;
+`;
+
 interface TableProps {
   dataSource: Record[];
   columns: Column[];
@@ -115,7 +121,7 @@ function Table({ dataSource, columns }: TableProps) {
   );
 
   //Current page, initially set to 1
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
 
   //Array of page numbers (1, 2, 3, ...)
   const [pageNumbers, setPageNumbers] = useState<number[]>([]);
@@ -174,9 +180,11 @@ function Table({ dataSource, columns }: TableProps) {
       setSorting({ sortOrder: "ascending", sortField: clickedHeader });
       imgElement.src = arrowUp;
     }
+    setCurrentPage(1);
   }
 
   useEffect(() => {
+    if (dataLength === 0) return;
     if (sorting.sortOrder === "no-sort") {
       setData(dataSource.slice(0, parseInt(numberOfRecords.toString())));
     } else {
@@ -191,6 +199,7 @@ function Table({ dataSource, columns }: TableProps) {
     sorting.sortField,
     sorting.sortOrder,
     totalPages,
+    dataLength,
   ]);
 
   return (
@@ -231,49 +240,72 @@ function Table({ dataSource, columns }: TableProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map((record: Record, index: number) => {
-            const isValidRecord = verifyRecord(record, headers);
-            return (
-              <Fragment key={index}>
-                {isValidRecord ? (
-                  <tr>
-                    {headers.map((header: string) => {
-                      const attributes = { className: "" };
-                      if (header === sorting.sortField)
-                        attributes["className"] = "selected";
+          {dataLength === 0 ? (
+            <tr>
+              <StyledSpannedTd colSpan={headers.length}>
+                No records found
+              </StyledSpannedTd>
+            </tr>
+          ) : (
+            data.map((record: Record, index: number) => {
+              const isValidRecord = verifyRecord(record, headers);
+              return (
+                <Fragment key={index}>
+                  {isValidRecord ? (
+                    <tr>
+                      {headers.map((header: string) => {
+                        const attributes = { className: "" };
+                        if (header === sorting.sortField)
+                          attributes["className"] = "selected";
 
-                      return (
-                        <td key={`${header}-${index}`} {...attributes}>
-                          {record[header]}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ) : (
-                  <>
-                    {console.error(`Record ${index + 1} is missing fields`)}
-                    {null}
-                  </>
-                )}
-              </Fragment>
-            );
-          })}
+                        return (
+                          <td key={`${header}-${index}`} {...attributes}>
+                            {record[header]}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ) : (
+                    <>
+                      {console.error(`Record ${index + 1} is missing fields`)}
+                      {null}
+                    </>
+                  )}
+                </Fragment>
+              );
+            })
+          )}
         </tbody>
       </StyledTable>
       <StyledGroup>
-        <span>{paginate(currentPage, numberOfRecords, dataLength)}</span>
-        <StyledPaginationDiv>
-          <button onClick={handlePreviousClick} disabled={currentPage === 1}>
-            Previous
-          </button>
-          <span>{`${currentPage} of ${totalPages}`}</span>
-          <button
-            onClick={handleNextClick}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </StyledPaginationDiv>
+        {dataLength === 0 ? (
+          <StyledGroup>
+            <span>{paginate(0, 0, 0)}</span>
+            <StyledPaginationDiv>
+              <button disabled>Previous</button>
+              <button disabled>Next</button>
+            </StyledPaginationDiv>
+          </StyledGroup>
+        ) : (
+          <StyledGroup>
+            <span>{paginate(currentPage, numberOfRecords, dataLength)}</span>
+            <StyledPaginationDiv>
+              <button
+                onClick={handlePreviousClick}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>{`${currentPage} of ${totalPages}`}</span>
+              <button
+                onClick={handleNextClick}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </StyledPaginationDiv>
+          </StyledGroup>
+        )}
       </StyledGroup>
     </>
   );

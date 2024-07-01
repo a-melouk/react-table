@@ -58,6 +58,7 @@ export const paginate = (
   numberOfRecordsPerPage: number,
   dataLength: number
 ) => {
+  if (dataLength === 0) return `Showing 0 to 0 of 0 entries`;
   const indexOfFirstRecord = (currentPage - 1) * numberOfRecordsPerPage + 1;
   const indexOfLastRecord = Math.min(
     currentPage * numberOfRecordsPerPage,
