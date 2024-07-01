@@ -180,7 +180,7 @@ function Table({ dataSource, columns }: TableProps) {
       setSorting({ sortOrder: "ascending", sortField: clickedHeader });
       imgElement.src = arrowUp;
     }
-    setCurrentPage(1);
+    if (currentPage !== 1) setCurrentPage(1);
   }
 
   useEffect(() => {
