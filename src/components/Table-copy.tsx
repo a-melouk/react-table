@@ -87,10 +87,13 @@ const StyledPaginationDiv = styled.div`
     }
   }
 `;
+interface TableProps {
+  dataSource: Record[];
+  columns: Column[];
+}
 
-function Table({ dataSource, columns }) {
+function Table({ dataSource, columns }: TableProps) {
   const headers = columns.map((column: Column) => column.dataIndex);
-  console.log(headers);
 
   //Total number of records
   const dataLength = dataSource.length;

@@ -19,37 +19,37 @@ export const sortDates = (
   order: "ascending" | "descending" | "no-sort",
   a: string,
   b: string
-) => {
+): number => {
   const dateA = new Date(a);
   const dateB = new Date(b);
   if (order === "ascending") {
     return dateA.getTime() - dateB.getTime();
   } else if (order === "descending") {
     return dateB.getTime() - dateA.getTime();
-  }
+  } else return 0;
 };
 
 export const sortString = (
   order: "ascending" | "descending" | "no-sort",
   a: string,
   b: string
-) => {
+): number => {
   if (order === "ascending") {
     return a > b ? 1 : -1;
   } else if (order === "descending") {
     return a < b ? 1 : -1;
-  }
+  } else return 0;
 };
 
 export const sortField = (
-  records: [],
+  records: Record[],
   field: string,
   order: "ascending" | "descending" | "no-sort"
 ) => {
   if (stringIsDate(records[0][field])) {
-    return (a, b) => sortDates(order, a[field], b[field]);
-  } else if (order === "descending") {
-    return (a, b) => sortString(order, a[field], b[field]);
+    return (a: Record, b: Record) => sortDates(order, a[field], b[field]);
+  } else {
+    return (a: Record, b: Record) => sortString(order, a[field], b[field]);
   }
 };
 

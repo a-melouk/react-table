@@ -89,23 +89,69 @@ describe("Unitary test of sortDates function", () => {
 
 describe("Given I'm on employees page", () => {
   const dataSource = Array.from(records);
-
+  const columns = [
+    {
+      title: "First Name",
+      dataIndex: "First name",
+      key: "First name",
+    },
+    {
+      title: "Last Name",
+      dataIndex: "Last name",
+      key: "Last name",
+    },
+    {
+      title: "Birth Date",
+      dataIndex: "Birth date",
+      key: "Birth date",
+    },
+    {
+      title: "Street",
+      dataIndex: "Street",
+      key: "Street",
+    },
+    {
+      title: "City",
+      dataIndex: "City",
+      key: "City",
+    },
+    {
+      title: "State",
+      dataIndex: "State",
+      key: "State",
+    },
+    {
+      title: "ZIP",
+      dataIndex: "ZIP",
+      key: "ZIP",
+    },
+    {
+      title: "Department",
+      dataIndex: "Department",
+      key: "Department",
+    },
+    {
+      title: "Start Date",
+      dataIndex: "Start date",
+      key: "Start date",
+    },
+  ];
   it("when I'm in the first page, the Previous button should be disabled", async () => {
-    render(<Table dataSource={dataSource} />);
+    render(<Table dataSource={dataSource} columns={columns} />);
     // Check if the previous button is disabled
     const previousButton = screen.getByText("Previous");
     expect(previousButton).toBeDisabled();
   });
 
   it("when I'm in the first page, the Next button should be enabled", async () => {
-    render(<Table dataSource={dataSource} />);
+    render(<Table dataSource={dataSource} columns={columns} />);
     // Check if the next button is enabled
     const nextButton = screen.getByText("Next");
     expect(nextButton).toBeEnabled();
   });
 
   it("when I'm in the last page, the Next button should be disabled", async () => {
-    render(<Table dataSource={dataSource} />);
+    render(<Table dataSource={dataSource} columns={columns} />);
     // Go to the last page
     const lastPageNumber = Math.ceil(dataSource.length / 10);
     for (let i = 1; i < lastPageNumber; i++) {

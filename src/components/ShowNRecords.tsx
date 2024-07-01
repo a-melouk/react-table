@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 
 const StyledShowNRecords = styled.div`
@@ -32,20 +32,29 @@ const StyledShowNRecords = styled.div`
   }
 `;
 
+interface ShowNRecordsProps {
+  numberOfRecords: number;
+  setNumberOfRecords: (value: number) => void;
+  setTotalPages: (value: number) => void;
+  setCurrentPage: (value: number) => void;
+  maxRecords: number;
+}
+
 function ShowNRecords({
   numberOfRecords,
   setNumberOfRecords,
   setTotalPages,
   setCurrentPage,
   maxRecords,
-}) {
-  function handleChange(event) {
-    setNumberOfRecords(event.target.value);
+}: ShowNRecordsProps) {
+  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
+    setNumberOfRecords(parseInt(event.target.value));
     //set selected option as selected
-    event.target.selected = "selected";
+    // event.target.selected = "selected";
+    // event.target.selectedOptions[0].selected = true;
   }
   useEffect(() => {
-    setTotalPages(Math.ceil(maxRecords / parseInt(numberOfRecords)));
+    setTotalPages(Math.ceil(maxRecords / numberOfRecords));
     setCurrentPage(1);
   }, [numberOfRecords, maxRecords, setTotalPages, setCurrentPage]);
 
