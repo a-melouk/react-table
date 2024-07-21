@@ -100,10 +100,6 @@ interface TableProps {
 
 function Table({ dataSource, columns }: TableProps) {
   const headers = columns.map((column: Column) => column.dataIndex);
-
-  //Total number of records
-  const dataLength = dataSource.length;
-
   //Needed for search in array
   const [search, setSearch] = useState("");
 
@@ -115,6 +111,9 @@ function Table({ dataSource, columns }: TableProps) {
       )
     );
   }, [dataSource, search]);
+
+  //Total number of records
+  const dataLength = filteredData.length;
 
   //Number of records to display per page
   const [numberOfRecords, setNumberOfRecords] = useState(10);
