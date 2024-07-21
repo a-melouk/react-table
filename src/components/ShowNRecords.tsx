@@ -49,9 +49,6 @@ function ShowNRecords({
 }: ShowNRecordsProps) {
   function handleChange(event: ChangeEvent<HTMLSelectElement>) {
     setNumberOfRecords(parseInt(event.target.value));
-    //set selected option as selected
-    // event.target.selected = "selected";
-    // event.target.selectedOptions[0].selected = true;
   }
   useEffect(() => {
     setTotalPages(Math.ceil(maxRecords / numberOfRecords));

@@ -1,13 +1,3 @@
-// "First name": "John",
-//     "Last name": "Doe",
-//     "Birth date": "01/01/1990",
-//     "Street": "123 Main St",
-//     "City": "Boston",
-//     "State": "MA",
-//     "ZIP": "02108",
-//     "Department": "Sales",
-//     "Start date": "03/15/2023"
-
 import { Record } from "./types";
 
 export const stringIsDate = (string: string) => {
@@ -69,4 +59,16 @@ export const paginate = (
 
 export function verifyRecord(record: Record, headers: string[]): boolean {
   return headers.every((header) => header in record);
+}
+
+export function filterRecords(
+  records: Record[],
+  search: string
+  // headers: string[]
+): Record[] {
+  return records.filter((record) =>
+    Object.values(record).some((value) =>
+      value.toLowerCase().includes(search.toLowerCase())
+    )
+  );
 }

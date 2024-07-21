@@ -3,7 +3,7 @@ import arrowUp from "../assets/arrow-up.svg";
 import arrowDown from "../assets/arrow-down.svg";
 import noSort from "../assets/no-sorting.svg";
 import { paginate, sortField, verifyRecord } from "../utils";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import ShowNRecords from "./ShowNRecords";
 import TableSearch from "./TableSearch";
 import { Column, Record } from "../types";
@@ -107,6 +107,15 @@ function Table({ dataSource, columns }: TableProps) {
   //Needed for search in array
   const [search, setSearch] = useState("");
 
+  const filteredData = useMemo(() => {
+    if (search === "") return dataSource;
+    return dataSource.filter((record) =>
+      Object.values(record).some((value) =>
+        value.toString().toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [dataSource, search]);
+
   //Number of records to display per page
   const [numberOfRecords, setNumberOfRecords] = useState(10);
 
@@ -116,8 +125,8 @@ function Table({ dataSource, columns }: TableProps) {
   );
 
   //Final Data to display, initially set to first 10 records
-  const [data, setData] = useState(
-    dataSource.slice(0, parseInt(numberOfRecords.toString()))
+  const [data, setData] = useState(() =>
+    filteredData.slice(0, parseInt(numberOfRecords.toString()))
   );
 
   //Current page, initially set to 1
@@ -140,6 +149,9 @@ function Table({ dataSource, columns }: TableProps) {
     // Update page numbers array
     const newPageNumbers = [];
     for (let i = 1; i <= totalPages; i++) newPageNumbers.push(i);
+    //Just to remove unused variable warning
+    pageNumbers.length == 0;
+
     setPageNumbers(newPageNumbers);
   }
 
@@ -152,6 +164,10 @@ function Table({ dataSource, columns }: TableProps) {
     const newPageNumber = currentPage + 1;
     if (newPageNumber <= totalPages) handlePageClick(newPageNumber);
   }
+
+  // fucntion handleclickedrow(row: Record) {
+  //   onclickedrow(row);
+  // }
 
   function handleHeaderClick(event: React.MouseEvent<HTMLTableCellElement>) {
     const thElement = event.currentTarget as HTMLTableCellElement;
@@ -184,21 +200,20 @@ function Table({ dataSource, columns }: TableProps) {
   }
 
   useEffect(() => {
-    if (dataLength === 0) return;
+    if (filteredData.length === 0) return;
     if (sorting.sortOrder === "no-sort") {
-      setData(dataSource.slice(0, parseInt(numberOfRecords.toString())));
+      setData(filteredData.slice(0, parseInt(numberOfRecords.toString())));
     } else {
-      const sortedData = dataSource.sort(
-        sortField(dataSource, sorting.sortField, sorting.sortOrder)
+      const sortedData = filteredData.sort(
+        sortField(filteredData, sorting.sortField, sorting.sortOrder)
       );
       setData(sortedData.slice(0, parseInt(numberOfRecords.toString())));
     }
   }, [
-    dataSource,
+    filteredData,
     numberOfRecords,
     sorting.sortField,
     sorting.sortOrder,
-    totalPages,
     dataLength,
   ]);
 
@@ -209,10 +224,17 @@ function Table({ dataSource, columns }: TableProps) {
           numberOfRecords={numberOfRecords}
           setNumberOfRecords={setNumberOfRecords}
           setTotalPages={setTotalPages}
-          maxRecords={dataLength}
+          maxRecords={filteredData.length}
           setCurrentPage={setCurrentPage}
         />
-        <TableSearch search={search} setSearch={setSearch} />
+        <TableSearch
+          search={search}
+          setSearch={setSearch}
+          numberOfRecords={numberOfRecords}
+          setTotalPages={setTotalPages}
+          maxRecords={filteredData.length}
+          setCurrentPage={setCurrentPage}
+        />
       </StyledGroup>
       <StyledTable>
         <thead>
@@ -252,6 +274,7 @@ function Table({ dataSource, columns }: TableProps) {
               return (
                 <Fragment key={index}>
                   {isValidRecord ? (
+                    // <tr onClick={handleclickedrow}>
                     <tr>
                       {headers.map((header: string) => {
                         const attributes = { className: "" };
@@ -288,7 +311,9 @@ function Table({ dataSource, columns }: TableProps) {
           </StyledGroup>
         ) : (
           <StyledGroup>
-            <span>{paginate(currentPage, numberOfRecords, dataLength)}</span>
+            <span>
+              {paginate(currentPage, numberOfRecords, filteredData.length)}
+            </span>
             <StyledPaginationDiv>
               <button
                 onClick={handlePreviousClick}

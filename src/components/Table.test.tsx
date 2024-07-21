@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { stringIsDate, sortField } from "../utils";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Table from "./Table-copy";
+import userEvent from "@testing-library/user-event";
+import Table from "./Table";
 import records from "../data/employees.json";
+import moreRecords from "../data/employees-copy.json";
 
 describe("stringIsDate", () => {
   it("valid date string", () => {
@@ -165,5 +167,140 @@ describe("Given I'm on employees page", () => {
     // Check if the next button is disabled
     const nextButton = screen.getByText("Next");
     expect(nextButton).toBeDisabled();
+  });
+});
+
+describe("Given I'm on employees page", () => {
+  const dataSource = Array.from(records);
+  const columns = [
+    {
+      title: "First Name",
+      dataIndex: "First name",
+      key: "First name",
+    },
+    {
+      title: "Last Name",
+      dataIndex: "Last name",
+      key: "Last name",
+    },
+    {
+      title: "Birth Date",
+      dataIndex: "Birth date",
+      key: "Birth date",
+    },
+    {
+      title: "Street",
+      dataIndex: "Street",
+      key: "Street",
+    },
+    {
+      title: "City",
+      dataIndex: "City",
+      key: "City",
+    },
+    {
+      title: "State",
+      dataIndex: "State",
+      key: "State",
+    },
+    {
+      title: "ZIP",
+      dataIndex: "ZIP",
+      key: "ZIP",
+    },
+    {
+      title: "Department",
+      dataIndex: "Department",
+      key: "Department",
+    },
+    {
+      title: "Start Date",
+      dataIndex: "Start date",
+      key: "Start date",
+    },
+  ];
+  it("when I write a string in search field, ", async () => {
+    render(<Table dataSource={dataSource} columns={columns} />);
+    // Check if the previous button is disabled
+    // const previousButton = screen.getByText("Previous");
+    // expect(previousButton).toBeDisabled();
+  });
+});
+
+const setup = () => {
+  const dataSource = Array.from(moreRecords);
+  const columns = [
+    {
+      title: "First Name",
+      dataIndex: "First name",
+      key: "First name",
+    },
+    {
+      title: "Last Name",
+      dataIndex: "Last name",
+      key: "Last name",
+    },
+    {
+      title: "Birth Date",
+      dataIndex: "Birth date",
+      key: "Birth date",
+    },
+    {
+      title: "Street",
+      dataIndex: "Street",
+      key: "Street",
+    },
+    {
+      title: "City",
+      dataIndex: "City",
+      key: "City",
+    },
+    {
+      title: "State",
+      dataIndex: "State",
+      key: "State",
+    },
+    {
+      title: "ZIP",
+      dataIndex: "ZIP",
+      key: "ZIP",
+    },
+    {
+      title: "Department",
+      dataIndex: "Department",
+      key: "Department",
+    },
+    {
+      title: "Start Date",
+      dataIndex: "Start date",
+      key: "Start date",
+    },
+  ];
+  const utils = render(<Table dataSource={dataSource} columns={columns} />);
+  const input = utils.getByPlaceholderText("Search...") as HTMLInputElement;
+  return {
+    input,
+    ...utils,
+  };
+};
+
+describe("Given I have an array of data", () => {
+  it("When I filter data, it should display only filtered data", async () => {
+    // render(<Table dataSource={dataSource} columns={columns} />);
+    const { input } = setup();
+
+    expect(
+      screen.getByText("Showing 1 to 10 of 111 entries")
+    ).toBeInTheDocument();
+
+    await userEvent.type(input, "Allen");
+    expect(input.value).toBe("Allen");
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Showing 1 to 3 of 3 entries")
+      ).toBeInTheDocument();
+      expect(screen.getByText("1 of 1")).toBeInTheDocument();
+    });
   });
 });

@@ -2,7 +2,7 @@ import "./App.css";
 // import records from "../data/employees.json";
 import records from "../data/employees-copy.json";
 // import records from "../data/employees-empty.json";
-import Table from "../components/Table-copy";
+import Table from "../components/Table";
 
 function App() {
   const dataSource = Array.from(records);
@@ -55,6 +55,7 @@ function App() {
     },
   ];
 
+  // return <Table dataSource={dataSource} columns={columns} onclickedrow={handleRowClick(row: Record)  />;
   return <Table dataSource={dataSource} columns={columns} />;
 }
 

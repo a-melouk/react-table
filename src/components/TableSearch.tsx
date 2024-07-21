@@ -1,3 +1,4 @@
+import { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 
 const StyledSearchGroup = styled.div`
@@ -38,10 +39,31 @@ const StyledSearchGroup = styled.div`
   }
 `;
 
-const TableSearch = ({ search, setSearch }) => {
-  function handleChange(event) {
+interface TableSearchProps {
+  search: string;
+  setSearch: (value: string) => void;
+  numberOfRecords: number;
+  setTotalPages: (value: number) => void;
+  setCurrentPage: (value: number) => void;
+  maxRecords: number;
+}
+
+const TableSearch = ({
+  search,
+  setSearch,
+  numberOfRecords,
+  setTotalPages,
+  setCurrentPage,
+  maxRecords,
+}: TableSearchProps) => {
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setSearch(event.target.value);
   }
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(maxRecords / numberOfRecords));
+    setCurrentPage(1);
+  }, [search, maxRecords, numberOfRecords, setCurrentPage, setTotalPages]);
 
   return (
     <StyledSearchGroup>
