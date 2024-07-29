@@ -222,8 +222,8 @@ describe("Given I'm on employees page", () => {
   it("when I write a string in search field, ", async () => {
     render(<Table dataSource={dataSource} columns={columns} />);
     // Check if the previous button is disabled
-    // const previousButton = screen.getByText("Previous");
-    // expect(previousButton).toBeDisabled();
+    const previousButton = screen.getByText("Previous");
+    expect(previousButton).toBeDisabled();
   });
 });
 
@@ -297,10 +297,28 @@ describe("Given I have an array of data", () => {
     expect(input.value).toBe("Allen");
 
     await waitFor(() => {
+      //Tests if the pagination is updated
       expect(
         screen.getByText("Showing 1 to 3 of 3 entries")
       ).toBeInTheDocument();
+
       expect(screen.getByText("1 of 1")).toBeInTheDocument();
+      //New test to check if the data is displayed
+      expect(screen.getAllByText("Allen")).toHaveLength(3);
+    });
+  });
+
+  it("When I change the number of records to display per page to 25, it should display 25 records", async () => {
+    setup();
+    //Per default, the table displays 10 records
+    expect(screen.getAllByRole("row")).toHaveLength(11);
+
+    // Change the number of rows per page to 25
+    const select = screen.getByRole("combobox");
+    userEvent.selectOptions(select, "25");
+
+    await waitFor(() => {
+      expect(screen.getAllByRole("row")).toHaveLength(26);
     });
   });
 });
