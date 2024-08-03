@@ -143,7 +143,6 @@ beforeEach(() => {
 });
 
 describe("Given I'm on employees page", () => {
-  /*
   it("when I'm in the first page, the Previous button should be disabled", async () => {
     // Check if the previous button is disabled
     const previousButton = screen.getByText("Previous");
@@ -211,8 +210,6 @@ describe("Given I'm on employees page", () => {
       expect(screen.getAllByRole("row")).toHaveLength(26);
     });
   });
-
-  */
 
   it("When I click on the First Name header, it should sort the data in ascending order", async () => {
     const firstNameHeader = screen.getByText("First name");
