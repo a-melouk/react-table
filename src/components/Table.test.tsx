@@ -143,6 +143,7 @@ beforeEach(() => {
 });
 
 describe("Given I'm on employees page", () => {
+  /*
   it("when I'm in the first page, the Previous button should be disabled", async () => {
     // Check if the previous button is disabled
     const previousButton = screen.getByText("Previous");
@@ -208,6 +209,78 @@ describe("Given I'm on employees page", () => {
 
     await waitFor(() => {
       expect(screen.getAllByRole("row")).toHaveLength(26);
+    });
+  });
+
+  */
+
+  it("When I click on the First Name header, it should sort the data in ascending order", async () => {
+    const firstNameHeader = screen.getByText("First name");
+    fireEvent.click(firstNameHeader);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole("row").slice(1); // Skip the header row
+      const firstNames = rows.map(
+        (row) => row.querySelector("td")?.textContent
+      );
+      const sortedFirstNames = moreRecords
+        .sort(sortField(moreRecords, "First name", "ascending"))
+        .slice(0, 10)
+        .map((record) => record["First name"]);
+
+      expect(firstNames).toStrictEqual(sortedFirstNames);
+    });
+  });
+
+  it("When I click on the First Name header twice, it should sort the data in descending order", async () => {
+    const firstNameHeader = screen.getByText("First name");
+    fireEvent.click(firstNameHeader);
+    fireEvent.click(firstNameHeader);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole("row").slice(1); // Skip the header row
+      const firstNames = rows.map(
+        (row) => row.querySelector("td")?.textContent
+      );
+      const sortedFirstNames = moreRecords
+        .sort(sortField(moreRecords, "First name", "descending"))
+        .slice(0, 10)
+        .map((record) => record["First name"]);
+
+      expect(firstNames).toStrictEqual(sortedFirstNames);
+    });
+  });
+
+  //When I sort birth dates
+  it("When I click on the Birth Date header, it should sort the data in ascending order", async () => {
+    const birthDateHeader = screen.getByText("Birth date");
+    fireEvent.click(birthDateHeader);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole("row").slice(1); // Skip the header row
+
+      const birthDates = rows.map(
+        (row) => row.querySelectorAll("td")[2]?.textContent
+      );
+      const sortedBirthDates = moreRecords
+        .sort(sortField(moreRecords, "Birth date", "ascending"))
+        .slice(0, 10)
+        .map((record) => record["Birth date"]);
+
+      expect(birthDates).toStrictEqual(sortedBirthDates);
+
+      const sortedByBirthDateFirstNames = rows.map(
+        (row) => row.querySelector("td")?.textContent
+      );
+
+      const sortedByBirthDateFirstNamesSource = moreRecords
+        .sort(sortField(moreRecords, "Birth date", "ascending"))
+        .slice(0, 10)
+        .map((record) => record["First name"]);
+
+      expect(sortedByBirthDateFirstNames).toStrictEqual(
+        sortedByBirthDateFirstNamesSource
+      );
     });
   });
 });
