@@ -7,6 +7,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import ShowNRecords from "./ShowNRecords";
 import TableSearch from "./TableSearch";
 import { Column, Record } from "../types";
+import "../normalize.css";
 
 const StyledTable = styled.table`
   border-collapse: collapse;
