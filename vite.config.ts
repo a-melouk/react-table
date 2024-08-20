@@ -19,15 +19,15 @@ export default defineConfig({
         },
       },
     },
-    //Generates sourcemaps for the built files,
-    //aiding in debugging.
+    // Generates sourcemaps for the built files, aiding in debugging.
     sourcemap: true,
-    //Clears the output directory before building.
+    // Clears the output directory before building.
     emptyOutDir: true,
+    // Adjust chunk size warning limit
+    chunkSizeWarningLimit: 1000,
   },
-  //react() enables React support.
-  //dts() generates TypeScript declaration files (*.d.ts)
-  //during the build.
+  // react() enables React support.
+  // dts() generates TypeScript declaration files (*.d.ts) during the build.
   plugins: [react(), dts()],
   test: {
     environment: "jsdom",
